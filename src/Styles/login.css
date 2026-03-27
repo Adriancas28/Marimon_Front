@@ -181,10 +181,16 @@ input[type="password"]:focus {
   cursor: pointer;
   transition: background-color 0.3s;
   margin: 8px 0;
+  width: 100%;
 }
 
-#login-submit:hover {
+#login-submit:hover:not(:disabled) {
   background-color: #c81213;
+}
+
+#login-submit:disabled {
+  background-color: #e88080;
+  cursor: not-allowed;
 }
 
 /* Enlace para registrarse */

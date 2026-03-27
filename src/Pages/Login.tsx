@@ -1,58 +1,67 @@
 import { useState } from "react";
-import "../Styles/login.css"; // ajusta la ruta según tu proyecto
+import { useNavigate } from "react-router-dom";
+import "../Styles/login.css";
 
 function Login() {
-  // estados (simulan el Model de .NET)
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  // proveedores simulados (luego vendrán del backend)
-  const externalLogins = [
-    { name: "Google", displayName: "Google" }
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    console.log({
-      email,
-      password,
-      rememberMe
-    });
+    try {
+      const response = await fetch("/api/usuario/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo: email, contraseña: password }),
+      });
 
-    alert("Login simulado");
+      if (!response.ok) {
+        const msg = await response.text();
+        setError(msg || "Correo o contraseña incorrectos.");
+        return;
+      }
+
+      const data = await response.json();
+
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", data.token ?? data.Token ?? "");
+      storage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
+
+      navigate("/catalogo");
+    } catch {
+      setError("No se pudo conectar con el servidor. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login_container">
       <div className="login_form">
-        <h3>Iniciar Sesión Con</h3>
+        <h3>Iniciar Sesión</h3>
 
         {/* LOGIN CON GOOGLE */}
         <div className="login_option">
-          {externalLogins.length === 0 ? (
-            <div className="option">
-              <p className="no-providers">
-                No hay servicios de autenticación externos configurados.
-              </p>
-            </div>
-          ) : (
-            <div className="option">
-              {externalLogins.map((provider) => (
-                <button
-                  key={provider.name}
-                  className="social-login-btn"
-                  onClick={() => alert(`Login con ${provider.displayName}`)}
-                >
-                  {provider.name.toLowerCase().includes("google") && (
-                    <div className="google-icon"></div>
-                  )}
-                  <span>{provider.displayName}</span>
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="option">
+            <button
+              type="button"
+              className="social-login-btn"
+              onClick={() => {
+                console.log("[Login] Iniciando autenticación con Google...");
+                window.location.href = "/api/usuario/oauth/google";
+              }}
+            >
+              <div className="google-icon"></div>
+              <span>Continuar con Google</span>
+            </button>
+          </div>
         </div>
 
         <p className="separator">
@@ -62,7 +71,7 @@ function Login() {
         {/* LOGIN LOCAL */}
         <section className="local-login">
           <form onSubmit={handleSubmit}>
-            
+
             {/* EMAIL */}
             <div className="input_box">
               <label>Correo Electrónico</label>
@@ -71,6 +80,7 @@ function Login() {
                 placeholder="Ingresa tu correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -78,13 +88,14 @@ function Login() {
             <div className="input_box">
               <div className="password_title">
                 <label>Contraseña</label>
-                <a href="#">¿Olvidaste tu Contraseña?</a>
+                <a href="#" id="forgot-password">¿Olvidaste tu Contraseña?</a>
               </div>
               <input
                 type="password"
                 placeholder="Ingresa tu contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
@@ -100,26 +111,19 @@ function Login() {
               </label>
             </div>
 
+            {/* ERROR */}
+            {error && <p className="text-danger">{error}</p>}
+
             {/* BOTÓN */}
-            <button type="submit">Iniciar Sesión</button>
+            <button id="login-submit" type="submit" disabled={loading}>
+              {loading ? "Cargando..." : "Iniciar Sesión"}
+            </button>
 
             <p className="sign_up">
               ¿No tienes una cuenta? <a href="#">Registrarse</a>
             </p>
           </form>
         </section>
-
-        {/* DEBUG (opcional) */}
-        <div className="debug-info">
-          <div className="alert alert-info">
-            <p>Proveedores disponibles: {externalLogins.length}</p>
-            {externalLogins.map((p) => (
-              <p key={p.name}>
-                - {p.name} ({p.displayName})
-              </p>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* IMAGEN */}
