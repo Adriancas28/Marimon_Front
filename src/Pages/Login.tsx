@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Styles/login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ function Login() {
       storage.setItem("token", data.token ?? data.Token ?? "");
       storage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
 
-      navigate("/catalogo");
+      navigate("/inicio");
     } catch {
       setError("No se pudo conectar con el servidor. Intenta de nuevo.");
     } finally {
@@ -43,52 +42,62 @@ function Login() {
   };
 
   return (
-    <div className="login_container">
-      <div className="login_form">
-        <h3>Iniciar Sesión</h3>
-
-        {/* LOGIN CON GOOGLE */}
-        <div className="login_option">
-          <div className="option">
-            <button
-              type="button"
-              className="social-login-btn"
-              onClick={() => {
-                console.log("[Login] Iniciando autenticación con Google...");
-                window.location.href = "/api/usuario/oauth/google";
-              }}
-            >
-              <div className="google-icon"></div>
-              <span>Continuar con Google</span>
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-red-50 px-4 py-8 lg:px-10">
+      <div className="mx-auto flex w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200">
+        <section className="w-full p-8 sm:p-12 lg:w-1/2">
+          <div className="mb-8">
+            <p className="text-sm font-semibold uppercase tracking-wider text-red-600">
+              Marimon
+            </p>
+            <h1 className="mt-2 text-3xl font-bold text-slate-900">Bienvenido de nuevo</h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Inicia sesión para ver el catálogo y gestionar tus pedidos.
+            </p>
           </div>
-        </div>
 
-        <p className="separator">
-          <span>o</span>
-        </p>
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+            onClick={() => {
+              console.log("[Login] Iniciando autenticación con Google...");
+              window.location.href = "/api/usuario/oauth/google";
+            }}
+          >
+            <img
+              src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg"
+              alt="Google"
+              className="h-5 w-5"
+            />
+            <span>Continuar con Google</span>
+          </button>
 
-        {/* LOGIN LOCAL */}
-        <section className="local-login">
-          <form onSubmit={handleSubmit}>
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-slate-200" />
+            <span className="text-xs font-semibold uppercase text-slate-400">o</span>
+            <div className="h-px flex-1 bg-slate-200" />
+          </div>
 
-            {/* EMAIL */}
-            <div className="input_box">
-              <label>Correo Electrónico</label>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Correo electrónico
+              </label>
               <input
                 type="email"
-                placeholder="Ingresa tu correo electrónico"
+                placeholder="Ingresa tu correo"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
               />
             </div>
 
-            {/* PASSWORD */}
-            <div className="input_box">
-              <div className="password_title">
-                <label>Contraseña</label>
-                <a href="#" id="forgot-password">¿Olvidaste tu Contraseña?</a>
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <label className="block text-sm font-medium text-slate-700">Contraseña</label>
+                <a href="#" className="text-xs font-medium text-slate-500 hover:text-red-600">
+                  ¿Olvidaste tu contraseña?
+                </a>
               </div>
               <input
                 type="password"
@@ -96,39 +105,58 @@ function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
               />
             </div>
 
-            {/* REMEMBER ME */}
-            <div className="checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                Recuérdame
-              </label>
-            </div>
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
+              />
+              Recuérdame
+            </label>
 
-            {/* ERROR */}
-            {error && <p className="text-danger">{error}</p>}
+            {error && (
+              <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {error}
+              </p>
+            )}
 
-            {/* BOTÓN */}
-            <button id="login-submit" type="submit" disabled={loading}>
-              {loading ? "Cargando..." : "Iniciar Sesión"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-red-600 px-4 py-3 font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-300"
+            >
+              {loading ? "Cargando..." : "Iniciar sesión"}
             </button>
 
-            <p className="sign_up">
-              ¿No tienes una cuenta? <a href="#">Registrarse</a>
+            <p className="text-center text-sm text-slate-500">
+              ¿No tienes una cuenta?{" "}
+              <a href="#" className="font-semibold text-red-600 hover:text-red-700">
+                Registrarse
+              </a>
             </p>
           </form>
         </section>
-      </div>
 
-      {/* IMAGEN */}
-      <div className="login_image">
-        <img src="/images/login.jpeg" alt="Imagen de la empresa" />
+        <section className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-red-600 via-red-500 to-orange-500 lg:block">
+          <img
+            src="/images/login.jpeg"
+            alt="Imagen de la empresa"
+            className="h-full w-full object-cover opacity-80 mix-blend-multiply"
+          />
+          <div className="absolute inset-0 flex items-end p-10">
+            <div className="rounded-2xl bg-white/15 p-6 backdrop-blur-sm">
+              <h2 className="text-2xl font-bold text-white">Autopartes de calidad</h2>
+              <p className="mt-2 text-sm text-red-50">
+                Compra con confianza y encuentra todo lo que tu vehículo necesita.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

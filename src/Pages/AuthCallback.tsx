@@ -47,8 +47,8 @@ function AuthCallback() {
         sessionStorage.setItem("token", data.token ?? data.Token ?? "");
         sessionStorage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
 
-        console.log("[AuthCallback] Login exitoso, redirigiendo a /catalogo");
-        navigate("/catalogo");
+        console.log("[AuthCallback] Login exitoso, redirigiendo a /inicio");
+        navigate("/inicio");
       })
       .catch((err) => {
         console.error("[AuthCallback] Error al llamar al backend:", err);
@@ -57,19 +57,24 @@ function AuthCallback() {
   }, [navigate]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", flexDirection: "column", gap: "16px" }}>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-slate-100 via-white to-indigo-50 px-4">
       {error ? (
         <>
-          <p style={{ color: "#e22122", fontSize: "1.1rem" }}>{error}</p>
+          <p className="max-w-md rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-red-700">
+            {error}
+          </p>
           <button
             onClick={() => navigate("/")}
-            style={{ padding: "10px 20px", backgroundColor: "#e22122", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+            className="mt-4 rounded-xl bg-red-600 px-5 py-2.5 font-semibold text-white transition hover:bg-red-700"
           >
             Volver al Login
           </button>
         </>
       ) : (
-        <p style={{ fontSize: "1.1rem", color: "#333" }}>{status}</p>
+        <div className="rounded-2xl bg-white px-8 py-6 text-center shadow-xl ring-1 ring-slate-200">
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-red-600" />
+          <p className="text-base font-medium text-slate-700">{status}</p>
+        </div>
       )}
     </div>
   );
