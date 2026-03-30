@@ -1,4 +1,5 @@
 import MainNavbar from "../components/MainNavbar";
+import { Link } from "react-router-dom";
 
 function Catalogo() {
   type ProductoMock = {
@@ -119,13 +120,13 @@ function Catalogo() {
                     </span>
                     <span className="text-[11px] text-[#66665d]">Stock: {producto.stock}</span>
                   </div>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-[11px] text-[#88887f]">
-                      Actualizado: {producto.fechaActualizacion ? new Date(producto.fechaActualizacion).toLocaleDateString() : "—"}
-                    </span>
-                    <button className="rounded-md border border-[#0b5f3a] px-2.5 py-1 text-xs font-semibold text-[#0b5f3a] transition hover:bg-[#0b5f3a] hover:text-white">
+                  <div className="mt-3 flex items-center justify-between gap-2">
+                    <button className="flex-1 rounded-md border border-[#0b5f3a] px-2.5 py-1.5 text-xs font-semibold text-[#0b5f3a] transition hover:bg-[#0b5f3a] hover:text-white">
                       Ver
                     </button>
+                    <Link to="/pago" className="flex-2 rounded-md bg-[#0b5f3a] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#084b2e] shadow-sm flex items-center justify-center gap-1">
+                      <i className="bi bi-cart-plus"></i> Añadir
+                    </Link>
                   </div>
                 </div>
               </article>
