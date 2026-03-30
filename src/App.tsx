@@ -13,7 +13,11 @@ import PagoExitoso from "./Pages/PagoExitoso";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      basename={
+        import.meta.env.BASE_URL.replace(/\/$/, '') || undefined
+      }
+    >
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Inicio />} />
