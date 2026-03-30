@@ -6,6 +6,10 @@ import Servicios from "./Pages/Servicios";
 import Nosotros from "./Pages/Nosotros";
 import Perfil from "./Pages/Perfil";
 import AuthCallback from "./Pages/AuthCallback";
+import Pago from "./Pages/Pago";
+import PagoYape from "./Pages/PagoYape";
+import PagoExitosoYape from "./Pages/PagoExitosoYape";
+import PagoExitoso from "./Pages/PagoExitoso";
 
 function App() {
   return (
@@ -14,6 +18,10 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/pago" element={<Pago />} />
+        <Route path="/pago-yape" element={<PagoYape />} />
+        <Route path="/pago-exitoso-yape" element={<PagoExitosoYape />} />
+        <Route path="/pago-exitoso" element={<PagoExitoso />} />
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/perfil" element={<Perfil />} />
