@@ -42,8 +42,8 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-red-50 px-4 py-8 lg:px-10">
-      <div className="mx-auto flex w-full max-w-6xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-red-50 flex items-center justify-center p-4 lg:p-10">
+      <div className="mx-auto flex w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200">
         <section className="w-full p-8 sm:p-12 lg:w-1/2">
           <div className="mb-8">
             <p className="text-sm font-semibold uppercase tracking-wider text-red-600">
