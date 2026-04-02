@@ -144,9 +144,12 @@ function Login() {
 
         <section className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-red-600 via-red-500 to-orange-500 lg:block">
           <img
-            src="/images/login.jpeg"
+            src={`${import.meta.env.BASE_URL}images/login.jpeg`}
             alt="Imagen de la empresa"
             className="h-full w-full object-cover opacity-80 mix-blend-multiply"
+            onError={(e) => {
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?q=80&w=1000&auto=format&fit=crop';
+            }}
           />
           <div className="absolute inset-0 flex items-end p-10">
             <div className="rounded-2xl bg-white/15 p-6 backdrop-blur-sm">
