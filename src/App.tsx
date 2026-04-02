@@ -15,7 +15,9 @@ import { CartProvider } from "./context/CartContext";
 function App() {
   return (
     <CartProvider>
-      <BrowserRouter>
+      <BrowserRouter
+        basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}
+      >
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Inicio />} />
