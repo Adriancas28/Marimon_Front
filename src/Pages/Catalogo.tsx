@@ -1,7 +1,9 @@
 import MainNavbar from "../components/MainNavbar";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 function Catalogo() {
+  const { addToCart } = useCart();
   type ProductoMock = {
     id: number;
     nombre: string;
@@ -124,9 +126,9 @@ function Catalogo() {
                     <button className="flex-1 rounded-md border border-[#0b5f3a] px-2.5 py-1.5 text-xs font-semibold text-[#0b5f3a] transition hover:bg-[#0b5f3a] hover:text-white">
                       Ver
                     </button>
-                    <Link to="/pago" className="flex-2 rounded-md bg-[#0b5f3a] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#084b2e] shadow-sm flex items-center justify-center gap-1">
+                    <button onClick={() => addToCart(producto)} className="flex-2 rounded-md bg-[#0b5f3a] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#084b2e] shadow-sm flex items-center justify-center gap-1 cursor-pointer">
                       <i className="bi bi-cart-plus"></i> Añadir
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </article>

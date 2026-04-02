@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import MainNavbar from "../components/MainNavbar";
 import { Link, useNavigate } from "react-router-dom";
-import "../Styles/Pago.css";
+import { useCart } from "../context/CartContext";
+import { getUserName, isAuthenticated } from "../utils/userSession";
 
 export default function Pago() {
   const navigate = useNavigate();
@@ -12,40 +13,26 @@ export default function Pago() {
   const [tipoDocumento, setTipoDocumento] = useState("");
   const [numeroDocumento, setNumeroDocumento] = useState("");
 
-  const usuario = {
-    usu_nombre: "Juan Carlos",
-    usu_apellido: "Pérez",
-    usu_correo: "juan.perez@example.com",
-  };
-
-  const carrito = [
-    {
-      id: 1,
-      Nombre: "Filtro de aceite premium",
-      PrecioUnitario: 49.9,
-      Cantidad: 2,
-      ImagenUrl: "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      Nombre: "Batería 12V 65Ah",
-      PrecioUnitario: 350.0,
-      Cantidad: 1,
-      ImagenUrl: "https://images.unsplash.com/photo-1603539444875-76e7684265b3?q=80&w=200&auto=format&fit=crop",
-    }
-  ];
-
-  const total = carrito.reduce((sum, item) => sum + item.PrecioUnitario * item.Cantidad, 0);
+  const { cartItems, cartTotal } = useCart();
+  const isAuth = isAuthenticated();
+  const userName = isAuth ? getUserName() : "";
 
   useEffect(() => {
-    if (total > 500 && metodoPago === "yape") {
+    if (cartTotal > 500 && metodoPago === "yape") {
       alert("Para montos mayores a S/ 500, solo se permite el pago con tarjeta de crédito/débito.");
       setMetodoPago("tarjeta");
     }
-  }, [metodoPago, total]);
+  }, [metodoPago, cartTotal]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isAuth) {
+      alert("Debes iniciar sesión primero para poder realizar el pago.");
+      navigate("/");
+      return;
+    }
+
     const newErrores: Record<string, string> = {};
     const formData = new FormData(e.target as HTMLFormElement);
 
@@ -77,7 +64,7 @@ export default function Pago() {
 
     if (Object.keys(newErrores).length === 0) {
       if (metodoPago === "yape") {
-        navigate("/pago-yape", { state: { total: total.toFixed(2) } });
+        navigate("/pago-yape", { state: { total: cartTotal.toFixed(2) } });
       } else {
         // Mock Stripe payment redirection after valid form
         navigate("/pago-exitoso", { state: { comprobante: `STRIPE-${Math.floor(Math.random() * 99999 + 1000)}` } });
@@ -148,11 +135,11 @@ export default function Pago() {
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Nombre *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={usuario.usu_nombre} readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={userName || ""} readOnly />
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Apellidos *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={usuario.usu_apellido} readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="Pérez (Mock)" readOnly />
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Tipo de Documento *</label>
@@ -192,15 +179,15 @@ export default function Pago() {
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Nombre *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={usuario.usu_nombre} readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={userName || ""} readOnly />
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Apellidos *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={usuario.usu_apellido} readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="Pérez (Mock)" readOnly />
                     </div>
                     <div className="md:col-span-2">
                       <label className="mb-1 block text-sm font-medium text-slate-700">Correo Electrónico *</label>
-                      <input type="email" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={usuario.usu_correo} readOnly />
+                      <input type="email" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="usuario@example.com (Mock)" readOnly />
                     </div>
                     <div className="md:col-span-2">
                       <label className="mb-1 block text-sm font-medium text-slate-700">Razón Social *</label>
@@ -250,14 +237,14 @@ export default function Pago() {
                     <span className="font-bold text-slate-800 text-sm">Tarjeta de Crédito/Débito</span>
                   </label>
 
-                  <label className={`custom-radio-btn relative flex cursor-pointer flex-col items-center rounded-xl border-2 p-4 transition-all text-center ${metodoPago === "yape" ? "border-[#0b5f3a] bg-green-50/30" : "border-gray-200 bg-white hover:bg-gray-50"} ${total > 500 ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    <input type="radio" value="yape" checked={metodoPago === "yape"} onChange={(e) => setMetodoPago(e.target.value)} disabled={total > 500} className="sr-only" />
+                  <label className={`custom-radio-btn relative flex cursor-pointer flex-col items-center rounded-xl border-2 p-4 transition-all text-center ${metodoPago === "yape" ? "border-[#0b5f3a] bg-green-50/30" : "border-gray-200 bg-white hover:bg-gray-50"} ${cartTotal > 500 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <input type="radio" value="yape" checked={metodoPago === "yape"} onChange={(e) => setMetodoPago(e.target.value)} disabled={cartTotal > 500} className="sr-only" />
                     <div className="flex gap-2 text-purple-600 mb-2">
                       <i className="bi bi-bank text-3xl"></i>
                       <i className="bi bi-phone-fill text-3xl"></i>
                     </div>
                     <span className="font-bold text-slate-800 text-sm">Yape + Depósito</span>
-                    {total > 500 && (
+                    {cartTotal > 500 && (
                       <span className="mt-1 text-xs text-red-500 font-medium">No disponible para &gt; S/ 500</span>
                     )}
                   </label>
@@ -274,10 +261,10 @@ export default function Pago() {
 
               {/* Términos y submit */}
               <div className="mt-4">
-                <div className={`mt-2 terms-container ${errores.terminos ? 'shake' : ''}`}>
-                  <div className="terms-check">
+                <div className={`mt-2 bg-slate-50 rounded-xl p-4 border-l-4 transition-all duration-300 hover:shadow-md ${errores.terminos ? 'border-red-500 animate-[shake_0.5s_ease]' : 'border-slate-400 hover:border-[#0b5f3a]'}`}>
+                  <div className="flex items-start gap-3">
                     <div
-                      className={`custom-checkbox shrink-0 ${aceptaTerminos ? 'checked' : ''}`}
+                      className={`relative shrink-0 flex items-center justify-center min-w-[22px] min-h-[22px] w-[22px] h-[22px] border-2 rounded-md transition-all duration-200 cursor-pointer mt-0.5 ${aceptaTerminos ? 'bg-[#0b5f3a] border-[#0b5f3a] text-white' : 'bg-white border-slate-400 hover:border-[#0b5f3a]'}`}
                       onClick={() => {
                         setAceptaTerminos(!aceptaTerminos);
                         if (errores.terminos) {
@@ -288,21 +275,24 @@ export default function Pago() {
                           });
                         }
                       }}
-                    ></div>
+                    >
+                      {aceptaTerminos && <i className="bi bi-check text-sm leading-none font-bold"></i>}
+                    </div>
                     <input
                       type="checkbox"
-                      className="form-check-input hidden"
+                      className="hidden"
                       checked={aceptaTerminos}
                       onChange={(e) => setAceptaTerminos(e.target.checked)}
                     />
-                    <div className="terms-text relative top-[1px]">
-                      He leído y acepto los <a href="#" className="terms-link ml-1">
+                    <div className="text-[0.95rem] leading-relaxed text-slate-600 relative top-[1px]">
+                      He leído y acepto los <a href="#" className="font-semibold text-slate-800 hover:text-[#0b5f3a] transition-colors relative inline-flex items-center group decoration-transparent">
                         Términos y Condiciones
-                        <i className="bi bi-box-arrow-up-right"></i>
+                        <i className="bi bi-box-arrow-up-right text-[0.8rem] ml-1 text-[#0b5f3a] transition-transform group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"></i>
+                        <span className="absolute left-0 bottom-[-2px] w-full h-[2px] bg-[#0b5f3a] scale-x-0 group-hover:scale-x-100 transition-transform origin-bottom-right ease-out duration-300"></span>
                       </a>
                     </div>
                   </div>
-                  {errores.terminos && <div className="text-[#ef4444] text-xs mt-3 ml-9 font-medium">{errores.terminos}</div>}
+                  {errores.terminos && <div className="text-red-500 text-xs mt-3 ml-9 font-medium">{errores.terminos}</div>}
                 </div>
 
                 <button type="submit" className="mt-8 w-full rounded-xl bg-[#0b5f3a] px-6 py-4 text-center font-bold text-white transition hover:bg-[#084b2e] flex items-center justify-center gap-2 shadow-lg shadow-green-900/20 active:scale-[0.98]">
@@ -324,11 +314,11 @@ export default function Pago() {
                 </div>
 
                 <div className="max-h-[380px] overflow-y-auto px-6 py-2">
-                  {carrito.map((item) => (
+                  {cartItems.map((item) => (
                     <div key={item.id} className="flex gap-4 py-4 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition px-2 -mx-2 rounded-lg">
                       <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
-                        {item.ImagenUrl ? (
-                          <img src={item.ImagenUrl} alt={item.Nombre} className="h-full w-full object-cover" />
+                        {item.imagen ? (
+                          <img src={item.imagen} alt={item.nombre} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <i className="bi bi-image text-gray-400"></i>
@@ -337,10 +327,10 @@ export default function Pago() {
                       </div>
                       <div className="flex flex-1 flex-col justify-between">
                         <div>
-                          <h4 className="text-sm font-semibold text-slate-800 line-clamp-2 leading-tight">{item.Nombre}</h4>
-                          <span className="mt-1 block text-xs text-gray-500">Cantidad: {item.Cantidad}</span>
+                          <h4 className="text-sm font-semibold text-slate-800 line-clamp-2 leading-tight">{item.nombre}</h4>
+                          <span className="mt-1 block text-xs text-gray-500">Cantidad: {item.quantity}</span>
                         </div>
-                        <span className="text-sm font-bold text-[#0b5f3a] mt-1">S/ {(item.PrecioUnitario * item.Cantidad).toFixed(2)}</span>
+                        <span className="text-sm font-bold text-[#0b5f3a] mt-1">S/ {(item.precio * item.quantity).toFixed(2)}</span>
                       </div>
                     </div>
                   ))}
@@ -349,7 +339,7 @@ export default function Pago() {
                 <div className="border-t border-gray-200 bg-gray-50 px-6 py-5">
                   <div className="flex items-center justify-between text-lg font-bold text-slate-800">
                     <span>TOTAL:</span>
-                    <span className="text-[#0b5f3a] text-xl">S/ {total.toFixed(2)}</span>
+                    <span className="text-[#0b5f3a] text-xl">S/ {cartTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

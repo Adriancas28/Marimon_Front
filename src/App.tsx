@@ -10,10 +10,12 @@ import Pago from "./Pages/Pago";
 import PagoYape from "./Pages/PagoYape";
 import PagoExitosoYape from "./Pages/PagoExitosoYape";
 import PagoExitoso from "./Pages/PagoExitoso";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
   return (
-    <BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/inicio" element={<Inicio />} />
@@ -28,6 +30,7 @@ function App() {
         <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
     </BrowserRouter>
+    </CartProvider>
   );
 }
 
