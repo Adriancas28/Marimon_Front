@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,6 +32,7 @@ function Login() {
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem("token", data.token ?? data.Token ?? "");
       storage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
+      storage.setItem("correo", data.correo ?? data.Correo ?? email);
 
       navigate("/inicio");
     } catch {
@@ -135,9 +136,9 @@ function Login() {
 
             <p className="text-center text-sm text-slate-500">
               ¿No tienes una cuenta?{" "}
-              <a href="#" className="font-semibold text-red-600 hover:text-red-700">
+              <Link to="/registro" className="font-semibold text-red-600 hover:text-red-700">
                 Registrarse
-              </a>
+              </Link>
             </p>
           </form>
         </section>

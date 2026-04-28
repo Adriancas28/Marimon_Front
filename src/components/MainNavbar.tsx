@@ -1,11 +1,18 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { getUserName } from "../utils/userSession";
+import { getUserName, isAuthenticated } from "../utils/userSession";
 import { useCart } from "../context/CartContext";
 
 function MainNavbar() {
   const userName = getUserName();
+  const isAuth = isAuthenticated();
   const navigate = useNavigate();
   const { cartItems, isCartOpen, setIsCartOpen, itemsCount, cartTotal, updateQuantity, removeFromCart } = useCart();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/");
+  };
 
   return (
     <header className="bg-black text-white shadow-lg">
@@ -41,12 +48,28 @@ function MainNavbar() {
               </span>
             )}
           </button>
-          <span className="hidden rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200 sm:inline">
-            {userName}
-          </span>
-          <Link to="/perfil" className="rounded-lg bg-[#e11d2e] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#be1020]">
-            Ver mi perfil
-          </Link>
+          {isAuth ? (
+            <>
+              <span className="hidden rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200 sm:inline">
+                {userName}
+              </span>
+              <Link to="/perfil" className="rounded-lg bg-[#e11d2e] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#be1020]">
+                Ver mi perfil
+              </Link>
+              <button 
+                onClick={handleLogout}
+                className="flex items-center justify-center rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-300 transition hover:bg-gray-700 hover:text-white"
+                title="Cerrar sesión"
+              >
+                <i className="bi bi-box-arrow-right sm:mr-1"></i>
+                <span className="hidden sm:inline">Cerrar sesión</span>
+              </button>
+            </>
+          ) : (
+            <Link to="/" className="rounded-lg bg-[#e11d2e] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#be1020]">
+              Iniciar sesión
+            </Link>
+          )}
         </div>
       </div>
 

@@ -3,7 +3,15 @@ export function getSessionValue(key: string): string {
 }
 
 export function getUserName(): string {
-  return getSessionValue("nombre") || "Cliente";
+  const nombre = getSessionValue("nombre");
+  if (nombre) return nombre;
+
+  const correo = getSessionValue("correo");
+  if (correo) {
+    return correo.split('@')[0]; // Muestra la parte anterior al @
+  }
+
+  return "Cliente";
 }
 
 export function isAuthenticated(): boolean {
