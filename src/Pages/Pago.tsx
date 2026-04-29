@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import MainNavbar from "../components/MainNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { getUserName, isAuthenticated } from "../utils/userSession";
+import { getUserName, isAuthenticated, getSessionValue } from "../utils/userSession";
 
 export default function Pago() {
   const navigate = useNavigate();
@@ -16,6 +16,10 @@ export default function Pago() {
   const { cartItems, cartTotal } = useCart();
   const isAuth = isAuthenticated();
   const userName = isAuth ? getUserName() : "";
+  
+  const [nombreBoleta, setNombreBoleta] = useState(() => getSessionValue("nombre") || "");
+  const [apellidoBoleta, setApellidoBoleta] = useState(() => getSessionValue("apellido") || "");
+  const [correoUsuario] = useState(() => getSessionValue("correo") || "");
 
   useEffect(() => {
     if (cartTotal > 500 && metodoPago === "yape") {
@@ -37,6 +41,9 @@ export default function Pago() {
     const formData = new FormData(e.target as HTMLFormElement);
 
     if (tipoComprobante === "boleta") {
+      if (!nombreBoleta.trim()) newErrores.bol_nombre = "Ingrese su nombre.";
+      if (!apellidoBoleta.trim()) newErrores.bol_apellido = "Ingrese sus apellidos.";
+      
       if (!tipoDocumento) newErrores.tipoDocumento = "Seleccione un tipo de documento.";
 
       if (tipoDocumento === "DNI" && !/^\d{8}$/.test(numeroDocumento)) {
@@ -66,8 +73,7 @@ export default function Pago() {
       if (metodoPago === "yape") {
         navigate("/pago-yape", { state: { total: cartTotal.toFixed(2) } });
       } else {
-        // Mock Stripe payment redirection after valid form
-        navigate("/pago-exitoso", { state: { comprobante: `STRIPE-${Math.floor(Math.random() * 99999 + 1000)}` } });
+        navigate("/pago-stripe", { state: { total: cartTotal } });
       }
     }
   };
@@ -135,11 +141,25 @@ export default function Pago() {
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Nombre *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={userName || ""} readOnly />
+                      <input 
+                        type="text" 
+                        className={`w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#0b5f3a] focus:ring-1 focus:ring-[#0b5f3a] ${errores.bol_nombre ? 'border-red-500 bg-white' : 'border-gray-300 bg-gray-50'}`}
+                        value={nombreBoleta}
+                        onChange={(e) => setNombreBoleta(e.target.value)}
+                        placeholder="Ingresa tu nombre"
+                      />
+                      {errores.bol_nombre && <p className="mt-1 text-xs text-red-500">{errores.bol_nombre}</p>}
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Apellidos *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="Pérez (Mock)" readOnly />
+                      <input 
+                        type="text" 
+                        className={`w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-colors focus:border-[#0b5f3a] focus:ring-1 focus:ring-[#0b5f3a] ${errores.bol_apellido ? 'border-red-500 bg-white' : 'border-gray-300 bg-gray-50'}`}
+                        value={apellidoBoleta}
+                        onChange={(e) => setApellidoBoleta(e.target.value)}
+                        placeholder="Ingresa tus apellidos"
+                      />
+                      {errores.bol_apellido && <p className="mt-1 text-xs text-red-500">{errores.bol_apellido}</p>}
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Tipo de Documento *</label>
@@ -179,15 +199,15 @@ export default function Pago() {
                   <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Nombre *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value={userName || ""} readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm text-gray-500 outline-none cursor-not-allowed" value={getSessionValue("nombre") || userName || "No registrado"} readOnly />
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium text-slate-700">Apellidos *</label>
-                      <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="Pérez (Mock)" readOnly />
+                      <input type="text" className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm text-gray-500 outline-none cursor-not-allowed" value={getSessionValue("apellido") || "No registrado"} readOnly />
                     </div>
                     <div className="md:col-span-2">
                       <label className="mb-1 block text-sm font-medium text-slate-700">Correo Electrónico *</label>
-                      <input type="email" className="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-500 outline-none" value="usuario@example.com (Mock)" readOnly />
+                      <input type="email" className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm text-gray-500 outline-none cursor-not-allowed" value={correoUsuario || "correo@no-registrado.com"} readOnly />
                     </div>
                     <div className="md:col-span-2">
                       <label className="mb-1 block text-sm font-medium text-slate-700">Razón Social *</label>
@@ -348,6 +368,7 @@ export default function Pago() {
           </div>
         </form>
       </main>
+
     </div>
   );
 }

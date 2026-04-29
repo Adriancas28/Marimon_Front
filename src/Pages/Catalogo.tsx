@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import MainNavbar from "../components/MainNavbar";
-import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 type Producto = {

@@ -11,6 +11,7 @@ import PagoYape from "./Pages/PagoYape";
 import PagoExitosoYape from "./Pages/PagoExitosoYape";
 import PagoExitoso from "./Pages/PagoExitoso";
 import Registro from "./Pages/Registro";
+import PagoStripe from "./Pages/PagoStripe";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/pago-yape" element={<PagoYape />} />
         <Route path="/pago-exitoso-yape" element={<PagoExitosoYape />} />
         <Route path="/pago-exitoso" element={<PagoExitoso />} />
+        <Route path="/pago-stripe" element={<PagoStripe />} />
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/perfil" element={<Perfil />} />
