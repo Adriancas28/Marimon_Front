@@ -17,6 +17,7 @@ import AdminUsuarios from "./Pages/AdminUsuarios";
 import AdminProductos from "./Pages/AdminProductos";
 import AdminCompras from "./Pages/AdminCompras";
 import AdminInventario from "./Pages/AdminInventario";
+import PerfilPedidos from "./Pages/PerfilPedidos";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/mis-pedidos" element={<PerfilPedidos />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/usuarios" element={<AdminUsuarios />} />
