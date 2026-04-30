@@ -44,8 +44,10 @@ function AuthCallback() {
         }
 
         const data = JSON.parse(text);
+        sessionStorage.setItem("id", data.id ?? data.Id ?? "");
         sessionStorage.setItem("token", data.token ?? data.Token ?? "");
         sessionStorage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
+        sessionStorage.setItem("correo", data.correo ?? data.Correo ?? "");
 
         console.log("[AuthCallback] Login exitoso, redirigiendo a /inicio");
         navigate("/inicio");

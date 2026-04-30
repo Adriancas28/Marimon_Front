@@ -7,37 +7,47 @@ import EncuestaModal from '../components/EncuestaModal';
 export default function PagoExitoso() {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
   const location = useLocation();
-  // Simulamos un número de comprobante tipo Factura/Boleta de sistema
   const comprobante = location.state?.comprobante || `CMP-${Math.floor(Math.random() * 900) + 100}`;
+  const orderData = location.state?.orderData || null;
 
   useEffect(() => {
-    // Fire confetti after a short delay
+    console.log("[PagoExitoso] Iniciando registro de venta...");
+    console.log("[PagoExitoso] orderData recibido:", orderData);
+
+    // Registrar venta en el backend (solo una vez por sesión)
+    if (orderData && !sessionStorage.getItem('venta_registrada_stripe')) {
+      console.log("[PagoExitoso] Enviando POST a /api/venta...");
+      sessionStorage.setItem('venta_registrada_stripe', '1');
+      const body = {
+        usuarioId: orderData.usuarioId,
+        metodoPagoId: orderData.metodoPagoId ?? 2,
+        detalles: orderData.detalles ?? [],
+        comprobante: {
+          tipo: orderData.tipoComprobante ?? 'boleta',
+          bolNombre: orderData.bolNombre ?? null,
+          bolApellido: orderData.bolApellido ?? null,
+          bolTipoDocumento: orderData.bolTipoDocumento ?? null,
+          bolNumeroDocumento: orderData.bolNumeroDocumento ?? null,
+          facRuc: orderData.facRuc ?? null,
+          facRazonSocial: orderData.facRazonSocial ?? null,
+          facDireccion: orderData.facDireccion ?? null,
+          evidencia: null,
+        },
+      };
+      fetch('/api/venta', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }).catch(err => console.warn('No se pudo registrar la venta:', err));
+    }
+
+    // Confetti
     setTimeout(() => {
-        confetti({
-            particleCount: 150,
-            spread: 80,
-            origin: { y: 0.6 },
-            colors: ['#E42229', '#D42025', '#626C66', '#ffda3a'],
-            disableForReducedMotion: true
-        });
-
-        setTimeout(() => {
-            confetti({
-                particleCount: 50,
-                angle: 120,
-                spread: 55,
-                origin: { x: 0, y: 0.6 },
-                colors: ['#E42229', '#ffda3a'],
-            });
-
-            confetti({
-                particleCount: 50,
-                angle: 60,
-                spread: 55,
-                origin: { x: 1, y: 0.6 },
-                colors: ['#D42025', '#626C66'],
-            });
-        }, 700);
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#E42229', '#D42025', '#626C66', '#ffda3a'], disableForReducedMotion: true });
+      setTimeout(() => {
+        confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 0, y: 0.6 }, colors: ['#E42229', '#ffda3a'] });
+        confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 1, y: 0.6 }, colors: ['#D42025', '#626C66'] });
+      }, 700);
     }, 500);
   }, []);
 

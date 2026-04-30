@@ -15,6 +15,7 @@ export default function PagoYape() {
 
   // Intentar obtener el total del estado de navegación, por defecto 0.00
   const total = location.state?.total || "0.00";
+  const orderData = location.state?.orderData || null;
   const bcpAccount = "25575353391071";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +73,10 @@ export default function PagoYape() {
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/pago-exitoso-yape', { 
-        state: { comprobante: 'YAPE-' + Math.floor(Math.random() * 900000 + 100000) } 
+        state: { 
+          comprobante: 'YAPE-' + Math.floor(Math.random() * 900000 + 100000),
+          orderData: orderData ? { ...orderData, metodoPagoId: 1 } : null, // 1 = Yape
+        } 
       });
     }, 2000);
   };

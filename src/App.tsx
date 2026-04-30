@@ -14,6 +14,9 @@ import Registro from "./Pages/Registro";
 import PagoStripe from "./Pages/PagoStripe";
 import AdminDashboard from "./Pages/AdminDashboard";
 import AdminUsuarios from "./Pages/AdminUsuarios";
+import AdminProductos from "./Pages/AdminProductos";
+import AdminCompras from "./Pages/AdminCompras";
+import AdminInventario from "./Pages/AdminInventario";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -38,6 +41,9 @@ function App() {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+        <Route path="/admin/productos" element={<AdminProductos />} />
+        <Route path="/admin/compras" element={<AdminCompras />} />
+        <Route path="/admin/inventario" element={<AdminInventario />} />
       </Routes>
     </BrowserRouter>
     </CartProvider>

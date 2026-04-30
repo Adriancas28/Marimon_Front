@@ -23,7 +23,7 @@ function Catalogo() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/productos");
+        const response = await fetch("http://localhost:8080/api/producto");
         if (!response.ok) {
           throw new Error("No se pudo cargar el catálogo.");
         }

@@ -30,6 +30,7 @@ function Login() {
       const data = await response.json();
 
       const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("id", data.id ?? data.Id ?? "");
       storage.setItem("token", data.token ?? data.Token ?? "");
       storage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
       storage.setItem("correo", data.correo ?? data.Correo ?? email);

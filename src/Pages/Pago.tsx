@@ -70,10 +70,31 @@ export default function Pago() {
     setErrores(newErrores);
 
     if (Object.keys(newErrores).length === 0) {
+      const formData2 = new FormData(e.target as HTMLFormElement);
+      const orderData = {
+        usuarioId: getSessionValue("id"),
+        total: cartTotal,
+        tipoComprobante,
+        // Boleta fields
+        bolNombre: nombreBoleta,
+        bolApellido: apellidoBoleta,
+        bolTipoDocumento: tipoDocumento,
+        bolNumeroDocumento: numeroDocumento,
+        // Factura fields
+        facRuc: formData2.get("fac_ruc") as string || null,
+        facRazonSocial: formData2.get("fac_razon") as string || null,
+        facDireccion: formData2.get("fac_direccion") as string || null,
+        // Cart
+        detalles: cartItems.map(item => ({
+          productoId: item.id,
+          cantidad: item.quantity,
+        })),
+      };
+
       if (metodoPago === "yape") {
-        navigate("/pago-yape", { state: { total: cartTotal.toFixed(2) } });
+        navigate("/pago-yape", { state: { total: cartTotal.toFixed(2), orderData } });
       } else {
-        navigate("/pago-stripe", { state: { total: cartTotal } });
+        navigate("/pago-stripe", { state: { total: cartTotal, orderData } });
       }
     }
   };

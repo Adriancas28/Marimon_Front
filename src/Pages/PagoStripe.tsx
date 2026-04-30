@@ -13,7 +13,7 @@ import MainNavbar from "../components/MainNavbar";
 // Usamos una llave pública de prueba de Stripe
 const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
-function CheckoutForm({ total }: { total: number }) {
+function CheckoutForm({ total, orderData }: { total: number; orderData: any }) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -85,9 +85,8 @@ function CheckoutForm({ total }: { total: number }) {
         clearCart();
         navigate("/pago-exitoso", {
           state: {
-            comprobante: `STRIPE-${paymentMethod.id
-              .substring(paymentMethod.id.length - 6)
-              .toUpperCase()}`,
+            comprobante: `STRIPE-${paymentMethod.id.substring(paymentMethod.id.length - 6).toUpperCase()}`,
+            orderData: { ...orderData, metodoPagoId: 2 }, // 2 = Tarjeta
           },
         });
       }, 1500); // Wait a bit to show the success animation
@@ -222,6 +221,7 @@ export default function PagoStripe() {
   const navigate = useNavigate();
   // Validamos que venga con un monto desde la página anterior
   const total = parseFloat(location.state?.total || "0");
+  const orderData = location.state?.orderData || null;
 
   if (total <= 0) {
     return (
@@ -277,7 +277,7 @@ export default function PagoStripe() {
 
             {/* Formulario de Stripe */}
             <Elements stripe={stripePromise}>
-              <CheckoutForm total={total} />
+              <CheckoutForm total={total} orderData={orderData} />
             </Elements>
           </div>
         </div>

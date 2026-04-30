@@ -3,41 +3,54 @@ import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import MainNavbar from '../components/MainNavbar';
 import EncuestaModal from '../components/EncuestaModal';
+import { useCart } from '../context/CartContext';
 
 export default function PagoExitosoYape() {
   const [isSurveyOpen, setIsSurveyOpen] = useState(false);
   const location = useLocation();
-  // Simulamos un número de comprobante aleatorio o devuelto por el state
+  const { clearCart } = useCart();
   const comprobante = location.state?.comprobante || `ORD-${Math.floor(Math.random() * 10000) + 1000}`;
+  const orderData = location.state?.orderData || null;
 
   useEffect(() => {
-    // Fire confetti after a short delay
+    console.log("[PagoExitosoYape] Iniciando registro de venta...");
+    console.log("[PagoExitosoYape] orderData recibido:", orderData);
+
+    // Registrar venta en el backend (solo una vez por sesión)
+    if (orderData && !sessionStorage.getItem('venta_registrada_yape')) {
+      console.log("[PagoExitosoYape] Enviando POST a /api/venta...");
+      sessionStorage.setItem('venta_registrada_yape', '1');
+      clearCart();
+      const body = {
+        usuarioId: orderData.usuarioId,
+        metodoPagoId: orderData.metodoPagoId ?? 1,
+        detalles: orderData.detalles ?? [],
+        comprobante: {
+          tipo: orderData.tipoComprobante ?? 'boleta',
+          bolNombre: orderData.bolNombre ?? null,
+          bolApellido: orderData.bolApellido ?? null,
+          bolTipoDocumento: orderData.bolTipoDocumento ?? null,
+          bolNumeroDocumento: orderData.bolNumeroDocumento ?? null,
+          facRuc: orderData.facRuc ?? null,
+          facRazonSocial: orderData.facRazonSocial ?? null,
+          facDireccion: orderData.facDireccion ?? null,
+          evidencia: null,
+        },
+      };
+      fetch('/api/venta', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }).catch(err => console.warn('No se pudo registrar la venta:', err));
+    }
+
+    // Confetti
     setTimeout(() => {
-        confetti({
-            particleCount: 150,
-            spread: 80,
-            origin: { y: 0.6 },
-            colors: ['#E42229', '#D42025', '#626C66', '#ffda3a'],
-            disableForReducedMotion: true
-        });
-
-        setTimeout(() => {
-            confetti({
-                particleCount: 50,
-                angle: 120,
-                spread: 55,
-                origin: { x: 0, y: 0.6 },
-                colors: ['#E42229', '#ffda3a'],
-            });
-
-            confetti({
-                particleCount: 50,
-                angle: 60,
-                spread: 55,
-                origin: { x: 1, y: 0.6 },
-                colors: ['#D42025', '#626C66'],
-            });
-        }, 700);
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#E42229', '#D42025', '#626C66', '#ffda3a'], disableForReducedMotion: true });
+      setTimeout(() => {
+        confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 0, y: 0.6 }, colors: ['#E42229', '#ffda3a'] });
+        confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 1, y: 0.6 }, colors: ['#D42025', '#626C66'] });
+      }, 700);
     }, 500);
   }, []);
 

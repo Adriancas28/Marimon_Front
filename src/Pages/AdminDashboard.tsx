@@ -29,7 +29,7 @@ const AdminDashboard = () => {
 
         {/* Contenido principal */}
         <div className="p-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             
             {/* Tarjeta de USUARIOS */}
             <Link to="/admin/usuarios" className="block group">
@@ -82,6 +82,24 @@ const AdminDashboard = () => {
                 </div>
                 <div className="bg-[#1c1c1c] text-white py-4 px-4 text-center mt-auto">
                   <span className="font-semibold text-base tracking-wide">COMPRAS</span>
+                </div>
+              </div>
+            </Link>
+
+            {/* Tarjeta de INVENTARIO */}
+            <Link to="/admin/inventario" className="block group">
+              <div className="bg-white border-0 rounded-none overflow-hidden shadow-md transition-all duration-300 ease-in-out transform group-hover:-translate-y-1.5 group-hover:shadow-xl h-full flex flex-col">
+                <div className="bg-gray-50 h-[220px] flex justify-center items-center p-4">
+                  <div className="transition-transform duration-300 ease-in-out transform group-hover:scale-105 text-[#d42025]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="bg-[#1c1c1c] text-white py-4 px-4 text-center mt-auto">
+                  <span className="font-semibold text-base tracking-wide">INVENTARIO</span>
                 </div>
               </div>
             </Link>
