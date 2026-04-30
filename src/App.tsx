@@ -13,6 +13,7 @@ import PagoExitoso from "./Pages/PagoExitoso";
 import Registro from "./Pages/Registro";
 import PagoStripe from "./Pages/PagoStripe";
 import AdminDashboard from "./Pages/AdminDashboard";
+import AdminUsuarios from "./Pages/AdminUsuarios";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/usuarios" element={<AdminUsuarios />} />
       </Routes>
     </BrowserRouter>
     </CartProvider>
