@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import MainNavbar from '../components/MainNavbar';
 import EncuestaModal from '../components/EncuestaModal';
 
@@ -44,12 +46,72 @@ export default function PagoExitoso() {
     // Confetti
     setTimeout(() => {
       confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#E42229', '#D42025', '#626C66', '#ffda3a'], disableForReducedMotion: true });
-      setTimeout(() => {
-        confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 0, y: 0.6 }, colors: ['#E42229', '#ffda3a'] });
-        confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 1, y: 0.6 }, colors: ['#D42025', '#626C66'] });
-      }, 700);
     }, 500);
   }, []);
+
+  const handleDownload = () => {
+    if (!orderData) {
+      alert("No hay datos de la orden disponibles para descargar.");
+      return;
+    }
+
+    const doc = new jsPDF();
+    
+    // Encabezado con Estilo Marimon
+    doc.setFillColor(228, 34, 41); // Rojo Marimon
+    doc.rect(0, 0, 210, 40, 'F');
+    
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255);
+    doc.text("COMPROBANTE DE PAGO", 105, 25, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text("MARIMON - REPUESTOS AUTOMOTRICES", 105, 33, { align: 'center' });
+
+    // Información del Cliente
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("INFORMACIÓN DEL CLIENTE", 14, 55);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Nombre: ${orderData.bolNombre || orderData.facRazonSocial || 'Cliente General'}`, 14, 63);
+    doc.text(`Documento: ${orderData.bolNumeroDocumento || orderData.facRuc || 'S/N'}`, 14, 69);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 75);
+    doc.text(`Número de Orden: ${comprobante}`, 14, 81);
+
+    // Tabla de Productos
+    const tableData = (orderData.detalles || []).map((item: any) => [
+      item.nombre || item.pro_nombre || `Producto #${item.productoId}`,
+      item.cantidad,
+      `S/ ${parseFloat(item.precioUnitario || item.pro_precio || 0).toFixed(2)}`,
+      `S/ ${(item.cantidad * (item.precioUnitario || item.pro_precio || 0)).toFixed(2)}`
+    ]);
+
+    autoTable(doc, {
+      startY: 90,
+      head: [['Descripción', 'Cant.', 'Precio Unit.', 'Subtotal']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [228, 34, 41], textColor: [255, 255, 255] },
+      styles: { fontSize: 9 }
+    });
+
+    // Total
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`TOTAL A PAGAR: S/ ${orderData.total?.toFixed(2)}`, 196, finalY + 10, { align: 'right' });
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100);
+    doc.text("Gracias por su preferencia en Marimon. Para cualquier consulta, contáctenos.", 105, 285, { align: 'center' });
+
+    doc.save(`Comprobante_${comprobante}.pdf`);
+  };
 
   return (
     <>
@@ -103,7 +165,7 @@ export default function PagoExitoso() {
                           <span>Encuesta de Satisfacción</span>
                       </button>
                       
-                      <button onClick={(e) => { e.preventDefault(); alert("Descargando comprobante..."); }} className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full font-bold text-base transition-all duration-300 sm:min-w-[200px] bg-white text-[#424a45] border-2 border-[#f0f2f1] shadow-[0_4px_8px_rgba(0,0,0,0.05)] hover:-translate-y-1 hover:border-[#E42229] hover:text-[#E42229] hover:shadow-[0_6px_10px_rgba(0,0,0,0.1)]">
+                      <button onClick={handleDownload} className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full font-bold text-base transition-all duration-300 sm:min-w-[200px] bg-white text-[#424a45] border-2 border-[#f0f2f1] shadow-[0_4px_8px_rgba(0,0,0,0.05)] hover:-translate-y-1 hover:border-[#E42229] hover:text-[#E42229] hover:shadow-[0_6px_10px_rgba(0,0,0,0.1)]">
                           <i className="bi bi-download text-[1.1rem]"></i>
                           <span>Descargar Comprobante</span>
                       </button>

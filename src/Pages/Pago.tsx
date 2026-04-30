@@ -88,6 +88,8 @@ export default function Pago() {
         detalles: cartItems.map(item => ({
           productoId: item.id,
           cantidad: item.quantity,
+          nombre: item.nombre,
+          precioUnitario: item.precio
         })),
       };
 
