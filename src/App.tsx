@@ -12,6 +12,7 @@ import PagoExitosoYape from "./Pages/PagoExitosoYape";
 import PagoExitoso from "./Pages/PagoExitoso";
 import Registro from "./Pages/Registro";
 import PagoStripe from "./Pages/PagoStripe";
+import AdminDashboard from "./Pages/AdminDashboard";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
     </CartProvider>
