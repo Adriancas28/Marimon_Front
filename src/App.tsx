@@ -27,7 +27,8 @@ function App() {
         basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}
       >
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Inicio />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/catalogo" element={<Catalogo />} />

@@ -47,13 +47,13 @@ function Login() {
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-red-50 flex items-center justify-center p-4 lg:p-10">
       <div className="mx-auto flex w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200">
         <section className="w-full p-8 sm:p-12 lg:w-1/2">
-          <div className="mb-8">
-            <p className="text-sm font-semibold uppercase tracking-wider text-red-600">
+          <div className="mb-8 text-center">
+            <p className="text-xl font-extrabold uppercase tracking-wide text-[#e11d2e]">
               Marimon
             </p>
-            <h1 className="mt-2 text-3xl font-bold text-slate-900">Bienvenido de nuevo</h1>
-            <p className="mt-2 text-sm text-slate-500">
-              Inicia sesión para ver el catálogo y gestionar tus pedidos.
+            <h1 className="mt-2 text-3xl font-bold text-slate-900">Iniciar Sesión</h1>
+            <p className="mt-2 text-sm text-slate-500 font-medium">
+              Gestiona tus pedidos y mantén tu vehículo al día.
             </p>
           </div>
 

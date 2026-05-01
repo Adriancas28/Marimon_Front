@@ -52,7 +52,7 @@ function Registro() {
         {/* Lado izquierdo - Formulario */}
         <section className="w-full p-8 sm:p-12 lg:w-1/2">
           <div className="mb-6">
-            <p className="text-sm font-semibold uppercase tracking-wider text-red-600">
+            <p className="text-xl font-extrabold uppercase tracking-wide text-[#e11d2e]">
               Marimon
             </p>
             <h1 className="mt-2 text-3xl font-bold text-slate-900">Crear una nueva cuenta</h1>

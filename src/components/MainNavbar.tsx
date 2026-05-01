@@ -66,7 +66,7 @@ function MainNavbar() {
               </button>
             </>
           ) : (
-            <Link to="/" className="rounded-lg bg-[#e11d2e] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#be1020]">
+            <Link to="/login" className="rounded-lg bg-[#e11d2e] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#be1020]">
               Iniciar sesión
             </Link>
           )}
