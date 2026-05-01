@@ -47,7 +47,8 @@ function ProductModal({ producto, isOpen, onClose }: ProductModalProps) {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/venta/ha-comprado/${userId}/${producto.id}`);
+      const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+      const response = await fetch(`${API_URL}/api/venta/ha-comprado/${userId}/${producto.id}`);
       console.log("[DEBUG MODAL] Respuesta del servidor (ha-comprado):", response.status);
       if (response.ok) {
         const bought = await response.json();
@@ -64,7 +65,8 @@ function ProductModal({ producto, isOpen, onClose }: ProductModalProps) {
     const userId = localStorage.getItem("id") || sessionStorage.getItem("id");
 
     try {
-      const response = await fetch(`http://localhost:8080/api/resenia/producto/${producto.id}`);
+      const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+      const response = await fetch(`${API_URL}/api/resenia/producto/${producto.id}`);
       if (response.ok) {
         const data = await response.json();
         setResenias(data);
@@ -111,7 +113,8 @@ function ProductModal({ producto, isOpen, onClose }: ProductModalProps) {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/resenia", {
+      const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+      const response = await fetch(`${API_URL}/api/resenia`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reseniaPayload),

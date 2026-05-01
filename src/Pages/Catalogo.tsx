@@ -50,7 +50,8 @@ function Catalogo() {
     try {
       // Nota: El backend actualmente no soporta filtros complejos, así que los simularemos en el front por ahora
       // o usaremos los params que existan.
-      const response = await fetch(`http://localhost:8080/api/producto?pagina=${pagina}`);
+      const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+      const response = await fetch(`${API_URL}/api/producto?pagina=${pagina}`);
       if (!response.ok) throw new Error("No se pudo cargar el catálogo.");
       
       const data = await response.json();
