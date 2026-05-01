@@ -97,9 +97,9 @@ function Login() {
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label className="block text-sm font-medium text-slate-700">Contraseña</label>
-                <a href="#" className="text-xs font-medium text-slate-500 hover:text-red-600">
+                <Link to="/olvido-clave" className="text-xs font-medium text-slate-500 hover:text-red-600">
                   ¿Olvidaste tu contraseña?
-                </a>
+                </Link>
               </div>
               <input
                 type="password"

@@ -18,6 +18,8 @@ import AdminProductos from "./Pages/AdminProductos";
 import AdminCompras from "./Pages/AdminCompras";
 import AdminInventario from "./Pages/AdminInventario";
 import PerfilPedidos from "./Pages/PerfilPedidos";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 import { CartProvider } from "./context/CartContext";
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/olvido-clave" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/catalogo" element={<Catalogo />} />
