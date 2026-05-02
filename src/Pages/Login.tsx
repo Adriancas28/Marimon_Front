@@ -62,7 +62,8 @@ function Login() {
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
             onClick={() => {
               console.log("[Login] Iniciando autenticación con Google...");
-              window.location.href = "/api/usuario/oauth/google";
+              const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+              window.location.href = `${API_URL}/api/usuario/oauth/google`;
             }}
           >
             <img
