@@ -95,10 +95,15 @@ const AdminUsuarios = () => {
     if (!selectedUser) return;
     setFormLoading(true);
     try {
-      const res = await fetch(`/api/usuario/${selectedUser.Id}`, {
+      const res = await fetch(`/api/usuario/${encodeURIComponent(selectedUser.Id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo: formCorreo, nombre: formNombre, apellidos: formApellidos }),
+        body: JSON.stringify({
+          Correo: formCorreo,
+          Nombre: formNombre,
+          Apellidos: formApellidos,
+          Contraseña: '',
+        }),
       });
       if (!res.ok) { const msg = await res.text(); throw new Error(msg); }
       showToast('edit', 'Usuario actualizado correctamente.');
@@ -114,7 +119,7 @@ const AdminUsuarios = () => {
     if (!selectedUser) return;
     setFormLoading(true);
     try {
-      const res = await fetch(`/api/usuario/${selectedUser.Id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/usuario/${encodeURIComponent(selectedUser.Id)}`, { method: 'DELETE' });
       if (!res.ok) { const msg = await res.text(); throw new Error(msg); }
       showToast('delete', 'Usuario eliminado correctamente.');
       setShowDelete(false);
@@ -310,8 +315,61 @@ const AdminUsuarios = () => {
         </div>
       )}
 
-      {/* Editar y Eliminar (Similar al estilo de arriba) */}
-      {/* ... (Se mantienen funcionales con el nuevo estilo de botones y espaciado) ... */}
+      {showEdit && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onClick={() => { setShowEdit(false); resetForm(); }}>
+          <div className="w-full max-w-lg animate-modal-in rounded-[32px] bg-white overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="bg-[#d42025] px-8 py-6 text-white">
+              <h3 className="text-xl font-black tracking-tight">EDITAR USUARIO</h3>
+              <p className="text-[10px] font-bold opacity-70 uppercase tracking-widest">ID: {selectedUser.Id.substring(0, 8)}…</p>
+            </div>
+            <form onSubmit={handleEdit} className="p-10 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Correo</label>
+                <input type="email" required value={formCorreo} onChange={e => setFormCorreo(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-100 px-5 py-4 text-sm font-bold outline-none transition-all focus:border-[#d42025]" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Nombres</label>
+                <input type="text" required value={formNombre} onChange={e => setFormNombre(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-100 px-5 py-4 text-sm font-bold outline-none transition-all focus:border-[#d42025]" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Apellidos</label>
+                <input type="text" required value={formApellidos} onChange={e => setFormApellidos(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-100 px-5 py-4 text-sm font-bold outline-none transition-all focus:border-[#d42025]" />
+              </div>
+              <div className="flex gap-4 pt-4">
+                <button type="button" onClick={() => { setShowEdit(false); resetForm(); }} className="flex-1 rounded-2xl bg-gray-100 py-4 text-xs font-black text-gray-500 hover:bg-gray-200 transition-all">CANCELAR</button>
+                <button type="submit" disabled={formLoading} className="flex-1 rounded-2xl bg-[#d42025] py-4 text-xs font-black text-white hover:bg-black transition-all shadow-lg shadow-red-900/20">
+                  {formLoading ? 'GUARDANDO...' : 'GUARDAR CAMBIOS'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showDelete && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4" onClick={() => setShowDelete(false)}>
+          <div className="w-full max-w-md animate-modal-in rounded-[32px] bg-white overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="bg-red-600 px-8 py-6 text-white">
+              <h3 className="text-xl font-black tracking-tight">ELIMINAR USUARIO</h3>
+              <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest mt-1">Esta acción no se puede deshacer</p>
+            </div>
+            <div className="p-10 space-y-6">
+              <p className="text-sm text-gray-600">
+                ¿Seguro que deseas eliminar a <strong className="text-gray-900">{selectedUser.Correo}</strong>?
+              </p>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setShowDelete(false)} className="flex-1 rounded-2xl bg-gray-100 py-4 text-xs font-black text-gray-500 hover:bg-gray-200 transition-all">CANCELAR</button>
+                <button type="button" onClick={handleDelete} disabled={formLoading} className="flex-1 rounded-2xl bg-red-600 py-4 text-xs font-black text-white hover:bg-red-800 transition-all">
+                  {formLoading ? 'ELIMINANDO...' : 'ELIMINAR'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
