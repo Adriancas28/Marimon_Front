@@ -63,7 +63,8 @@ function Login() {
             onClick={() => {
               console.log("[Login] Iniciando autenticación con Google...");
               const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
-              window.location.href = `${API_URL}/api/usuario/oauth/google`;
+              const REDIRECT_URL = window.location.origin + "/auth/callback";
+              window.location.href = `${API_URL}/api/usuario/oauth/google?redirectTo=${encodeURIComponent(REDIRECT_URL)}`;
             }}
           >
             <img
