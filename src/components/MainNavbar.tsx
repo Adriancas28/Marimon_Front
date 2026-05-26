@@ -74,9 +74,15 @@ function MainNavbar() {
                 <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">
                   {userName}
                 </span>
-                <Link to="/perfil" className="rounded-lg bg-[#e11d2e] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#be1020]">
-                  Ver mi perfil
-                </Link>
+                {getSessionValue("correo") === "admin@marimon.com" ? (
+                  <Link to="/admin" className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-yellow-600">
+                    Panel Admin
+                  </Link>
+                ) : (
+                  <Link to="/perfil" className="rounded-lg bg-[#e11d2e] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#be1020]">
+                    Ver mi perfil
+                  </Link>
+                )}
                 <button 
                   onClick={handleLogout}
                   className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-800 text-gray-300 transition hover:bg-gray-700 hover:text-white"
@@ -123,13 +129,23 @@ function MainNavbar() {
                 </div>
                 <span className="text-sm font-medium text-gray-200">{userName}</span>
               </div>
-              <Link 
-                to="/perfil" 
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full text-center py-3 bg-red-600 rounded-xl text-xs font-bold uppercase tracking-widest"
-              >
-                Mi Perfil
-              </Link>
+              {getSessionValue("correo") === "admin@marimon.com" ? (
+                <Link 
+                  to="/admin" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-center py-3 bg-yellow-500 text-black rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-yellow-600 transition-colors"
+                >
+                  Panel Admin
+                </Link>
+              ) : (
+                <Link 
+                  to="/perfil" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-center py-3 bg-red-600 rounded-xl text-xs font-bold uppercase tracking-widest"
+                >
+                  Mi Perfil
+                </Link>
+              )}
               <button 
                 onClick={handleLogout}
                 className="w-full text-center py-3 bg-gray-800 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-400"

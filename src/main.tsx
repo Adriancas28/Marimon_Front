@@ -6,7 +6,8 @@ import App from './App.tsx'
 // Interceptor global para agregar el URL base a todas las peticiones fetch
 const originalFetch = window.fetch;
 window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-  const API_URL = import.meta.env.VITE_API_URL || "https://marimonbackend.onrender.com";
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const API_URL = import.meta.env.VITE_API_URL || (isLocal ? "http://localhost:8080" : "https://marimonbackend.onrender.com");
   
   if (typeof input === 'string') {
     if (input.startsWith('/api/')) {

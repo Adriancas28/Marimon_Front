@@ -82,8 +82,10 @@ function Catalogo() {
     }
   }, []);
 
-  // ── Cargar TODOS los productos (necesario para filtrar por categoría) ──────
+  // ── Cargar TODOS los productos (necesario para filtrar, buscar y ordenar) ──
   const fetchTodosLosProductos = useCallback(async () => {
+    if (loadingAll) return;
+    if (todosLosProductos.length > PAGE_SIZE) return; // ya están cargados
     setLoadingAll(true);
     setLoading(true);
     setError("");
@@ -120,25 +122,25 @@ function Catalogo() {
       setLoading(false);
       setLoadingAll(false);
     }
-  }, []);
+  }, [todosLosProductos.length, loadingAll]);
 
   // ── Efecto principal: decidir si cargar todo o solo una página ─────────────
-  const hayFiltroCategoria = selectedCategories.length > 0;
+  const usandoPaginacionFrontend = selectedCategories.length > 0 || searchTerm.trim() !== "" || sortBy !== "";
 
   useEffect(() => {
-    if (hayFiltroCategoria) {
-      // Con filtro de categoría → necesitamos TODOS los productos
+    if (usandoPaginacionFrontend) {
+      // Si se requiere filtro, búsqueda o sort → necesitamos TODOS los productos
       fetchTodosLosProductos();
       setPagina(1); // resetear paginación frontend
     } else {
-      // Sin filtro → paginación normal del backend
+      // Sin filtros activos → cargamos paginación normal del backend
       fetchPaginaBackend(pagina);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategories]);
+  }, [selectedCategories, searchTerm, sortBy]);
 
   useEffect(() => {
-    if (!hayFiltroCategoria) {
+    if (!usandoPaginacionFrontend) {
       fetchPaginaBackend(pagina);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,8 +162,7 @@ function Catalogo() {
       return 0;
     });
 
-  // Paginación frontend (solo cuando hay filtro de categoría o búsqueda)
-  const usandoPaginacionFrontend = hayFiltroCategoria || searchTerm.trim() !== "";
+  // Paginación frontend
   const totalPaginasFrontend = Math.max(1, Math.ceil(productosFiltrados.length / PAGE_SIZE));
 
   const productosVisibles = usandoPaginacionFrontend

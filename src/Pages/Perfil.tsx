@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MainNavbar from "../components/MainNavbar";
 import { getSessionValue, getUserName } from "../utils/userSession";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 interface Pedido {
   id: number;
@@ -17,6 +17,13 @@ interface Pedido {
 }
 
 function Perfil() {
+  const correo = getSessionValue("correo");
+  
+  // Si el usuario es el Administrador, no debe tener un perfil de cliente
+  if (correo === "admin@marimon.com") {
+    return <Navigate to="/admin" replace />;
+  }
+
   const nombre = getUserName();
   const token = getSessionValue("token");
   const usuarioId = getSessionValue("id");
