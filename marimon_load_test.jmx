@@ -98,7 +98,7 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
   &quot;correo&quot;: &quot;prueba_5224@test.com&quot;,&#xd;
-  &quot;contraseña&quot;: &quot;password123&quot;&#xd;
+  &quot;contrase\u00f1a&quot;: &quot;password123&quot;&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
