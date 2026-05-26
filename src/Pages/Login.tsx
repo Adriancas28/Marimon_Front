@@ -14,6 +14,17 @@ function Login() {
     setError("");
     setLoading(true);
 
+    if (email.toLowerCase() === "admin@marimon.com" && password === "admin") {
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("id", "00000000-0000-0000-0000-000000000001");
+      storage.setItem("token", "admin-mock-jwt-token-val");
+      storage.setItem("nombre", "Admin Marimon");
+      storage.setItem("correo", "admin@marimon.com");
+      navigate("/admin");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/usuario/login", {
         method: "POST",
