@@ -35,7 +35,12 @@ function Login() {
       storage.setItem("nombre", data.nombre ?? data.Nombre ?? "");
       storage.setItem("correo", data.correo ?? data.Correo ?? email);
 
-      navigate("/inicio");
+      const userEmail = data.correo ?? data.Correo ?? email;
+      if (userEmail.toLowerCase() === "admin@marimon.com") {
+        navigate("/admin");
+      } else {
+        navigate("/inicio");
+      }
     } catch {
       setError("No se pudo conectar con el servidor. Intenta de nuevo.");
     } finally {

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "./Pages/Login";
 import Inicio from "./Pages/Inicio";
 import Catalogo from "./Pages/Catalogo";
@@ -21,6 +21,15 @@ import PerfilPedidos from "./Pages/PerfilPedidos";
 import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import { CartProvider } from "./context/CartContext";
+import { getSessionValue } from "./utils/userSession";
+
+function AdminProtectedRoute() {
+  const email = getSessionValue("correo");
+  if (email !== "admin@marimon.com") {
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
+}
 
 function App() {
   return (
@@ -46,11 +55,13 @@ function App() {
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/mis-pedidos" element={<PerfilPedidos />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/usuarios" element={<AdminUsuarios />} />
-        <Route path="/admin/productos" element={<AdminProductos />} />
-        <Route path="/admin/compras" element={<AdminCompras />} />
-        <Route path="/admin/inventario" element={<AdminInventario />} />
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+          <Route path="/admin/productos" element={<AdminProductos />} />
+          <Route path="/admin/compras" element={<AdminCompras />} />
+          <Route path="/admin/inventario" element={<AdminInventario />} />
+        </Route>
       </Routes>
     </BrowserRouter>
     </CartProvider>

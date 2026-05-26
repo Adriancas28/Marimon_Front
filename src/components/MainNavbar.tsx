@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { getUserName, isAuthenticated } from "../utils/userSession";
+import { getUserName, isAuthenticated, getSessionValue } from "../utils/userSession";
 import { useCart } from "../context/CartContext";
 
 function MainNavbar() {
@@ -46,6 +46,11 @@ function MainNavbar() {
           <NavLink to="/nosotros" className={({ isActive }) => (isActive ? "text-[#e11d2e]" : "transition hover:text-[#e11d2e]")}>
             NOSOTROS
           </NavLink>
+          {getSessionValue("correo") === "admin@marimon.com" && (
+            <NavLink to="/admin" className={({ isActive }) => (isActive ? "text-[#e11d2e]" : "transition hover:text-[#e11d2e] font-bold text-yellow-400 animate-pulse")}>
+              ADMIN
+            </NavLink>
+          )}
         </nav>
 
         <div className="flex items-center gap-2 md:gap-3">
@@ -104,6 +109,9 @@ function MainNavbar() {
           <NavLink to="/catalogo" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-widest text-gray-300 hover:text-white">CATALOGO</NavLink>
           <NavLink to="/servicios" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-widest text-gray-300 hover:text-white">SERVICIOS</NavLink>
           <NavLink to="/nosotros" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-widest text-gray-300 hover:text-white">NOSOTROS</NavLink>
+          {getSessionValue("correo") === "admin@marimon.com" && (
+            <NavLink to="/admin" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-widest text-yellow-400 hover:text-white">ADMIN</NavLink>
+          )}
           
           <div className="h-px bg-white/10 my-2"></div>
           
